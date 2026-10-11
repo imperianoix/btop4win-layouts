@@ -56,7 +56,6 @@ componentes de LibreHardwareMonitor mantienen sus licencias correspondientes.
 * [Themes](#themes)
 * [Support and funding](#support-and-funding)
 * [Prerequisites](#prerequisites) (Read this if you are having issues!)
-* [Screenshots](#screenshots)
 * [Keybindings](#help-menu)
 * [Installation](#installation)
 * [Compilation](#compilation)
@@ -210,28 +209,6 @@ Also needs a UTF8 locale and a font that covers:
 * If you are having problems with the characters in the graphs not looking like they do in the screenshots, it's likely a problem with your font not having support for some characters used (braille characters etc.).
 
 * See [Cascadia Code](https://github.com/microsoft/cascadia-code) or [Terminess Powerline](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Terminus/terminus-ttf-4.40.1) for examples of fonts that includes the needed symbols.
-
-## Screenshots
-
-#### Main UI showing details for a selected process, font: [Terminess Powerline](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Terminus/terminus-ttf-4.40.1)
-
-![Screenshot 1](Img/normal.png)
-
-#### Main UI showing details for a selected service, font [Input Mono Compressed](https://input.djr.com), theme OneDark
-
-![Screenshot 2](Img/services.png)
-
-#### Main UI with TTY graph symbols using CMD Raster fonts
-
-![Screenshot 3](Img/tty.png)
-
-#### Options-menu
-
-![Screenshot 4](Img/options-menu.png)
-
-#### Help-menu
-
-![Screenshot 5](Img/help-menu.png)
 
 ## Installation
 
