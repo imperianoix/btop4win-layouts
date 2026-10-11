@@ -1,5 +1,38 @@
 # ![btop++](Img/logo.png)
 
+## btop4win-layouts
+
+Fork comunitario de [btop4win](https://github.com/aristocratos/btop4win) para
+Windows con alternativas de distribución de los paneles:
+
+- **Lateral:** distribución original de btop4win.
+- **Columna vertical:** CPU/GPU, Memoria, Procesos y Red, en ese orden y usando
+  todo el ancho de la terminal.
+
+Esta rama contiene la implementación **vertical**. La versión lateral original
+se obtiene desde el proyecto principal. El cambio se concentra en
+`src/btop_draw.cpp` (dimensiones y coordenadas) y `src/btop_tools.cpp` (tamaño
+mínimo de terminal). Para mostrar los cuatro paneles se necesitan al menos
+60 columnas por 40 filas.
+
+### GPU y sensores en Windows
+
+Compila la configuración `Release-LHM|x64` para activar GPU, temperaturas y
+reloj mediante LibreHardwareMonitor. Esta configuración requiere las DLL y la
+biblioteca de [LHM-CppExport](https://github.com/aristocratos/LHM-CppExport),
+además de permisos de administrador. La configuración `Release|x64` no muestra
+datos completos de GPU.
+
+> **Aviso de seguridad:** algunas versiones de Microsoft Defender pueden
+> marcar el controlador `btop.sys` usado por LibreHardwareMonitor. No desactives
+> el antivirus. Revisa la alerta, el origen y los hashes antes de ejecutar o
+> distribuir binarios.
+
+El código conserva la licencia Apache 2.0 del proyecto original y los
+componentes de LibreHardwareMonitor mantienen sus licencias correspondientes.
+
+---
+
 ![Windows](https://img.shields.io/badge/-Windows-red?logo=windows)
 ![Usage](https://img.shields.io/badge/Usage-System%20resource%20monitor-yellow)
 ![c++20](https://img.shields.io/badge/cpp-c%2B%2B20-green)
