@@ -15,6 +15,10 @@ se obtiene desde el proyecto principal. El cambio se concentra en
 mínimo de terminal). Para mostrar los cuatro paneles se necesitan al menos
 60 columnas por 40 filas.
 
+### Vista del layout vertical
+
+![btop4win con CPU y GPU, memoria, procesos y red organizados en una columna vertical](Img/vertical-layout.png)
+
 ### GPU y sensores en Windows
 
 Compila la configuración `Release-LHM|x64` para activar GPU, temperaturas y
