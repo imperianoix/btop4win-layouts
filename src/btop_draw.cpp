@@ -1622,10 +1622,6 @@ namespace Draw {
 		atomic_wait(Runner::active);
 		Config::unlock();
 		auto& boxes = Config::getS("shown_boxes");
-		auto& cpu_bottom = Config::getB("cpu_bottom");
-		auto& cpu_wide = Config::getB("cpu_wide");
-		auto& mem_below_net = Config::getB("mem_below_net");
-		auto& proc_left = Config::getB("proc_left");
 
 		Cpu::box.clear();
 		Mem::box.clear();
@@ -1652,14 +1648,40 @@ namespace Draw {
 		Net::shown = s_contains(boxes, "net");
 		Proc::shown = s_contains(boxes, "proc");
 
+		// Full-width vertical layout: CPU, memory, processes, network.
+		// Give every visible box its minimum height first, then distribute any
+		// remaining rows using weights that favour CPU graphs and the process list.
+		int extra_height = Term::height
+			- (Cpu::shown ? Cpu::min_height : 0)
+			- (Mem::shown ? Mem::min_height : 0)
+			- (Proc::shown ? Proc::min_height : 0)
+			- (Net::shown ? Net::min_height : 0);
+		int remaining_weight = (Cpu::shown ? 32 : 0)
+			+ (Mem::shown ? 20 : 0)
+			+ (Proc::shown ? 32 : 0)
+			+ (Net::shown ? 16 : 0);
+		auto stack_height = [&extra_height, &remaining_weight](const bool shown, const int minimum, const int weight) {
+			if (not shown) return 0;
+			const int share = (remaining_weight == weight)
+				? extra_height
+				: extra_height * weight / remaining_weight;
+			extra_height -= share;
+			remaining_weight -= weight;
+			return minimum + share;
+		};
+		const int cpu_height = stack_height(Cpu::shown, Cpu::min_height, 32);
+		const int mem_height = stack_height(Mem::shown, Mem::min_height, 20);
+		const int proc_height = stack_height(Proc::shown, Proc::min_height, 32);
+		const int net_height = stack_height(Net::shown, Net::min_height, 16);
+
 		//* Calculate and draw cpu box outlines
 		if (Cpu::shown) {
 			using namespace Cpu;
 			const bool show_gpu = (Config::getB("show_gpu") and has_gpu);
-			width = round((double)Term::width * (Proc::shown and not cpu_wide ? width_p : 100) / 100);
-			height = max(8, (int)ceil((double)Term::height * (trim(boxes) == "cpu" ? 100 : height_p) / 100));
+			width = Term::width;
+			height = cpu_height;
 			x = 1;
-			y = cpu_bottom ? Term::height - height + 1 : 1;
+			y = 1;
 
 			b_columns = max(1, (int)ceil((double)(Shared::coreCount + 1) / (height - 5 - (show_gpu ? 1 : 0))));
 			if (b_columns * 33 < width - (width / 3)) {
@@ -1684,7 +1706,7 @@ namespace Draw {
 			b_x = x + width - b_width - 1;
 			b_y = y + ceil((double)(height - 2) / 2) - ceil((double)b_height / 2) + 1;
 
-			box = createBox(x, y, width, height, Theme::c("cpu_box"), true, (cpu_bottom ? "" : "cpu"), (cpu_bottom ? "cpu" : ""), 1);
+			box = createBox(x, y, width, height, Theme::c("cpu_box"), true, "cpu", "", 1);
 
 			auto& custom = Config::getS("custom_cpu_name");
 			const string cpu_title = uresize((custom.empty() ? Cpu::cpuName : custom) , b_width - 14);
@@ -1698,14 +1720,10 @@ namespace Draw {
 			auto& mem_graphs = Config::getB("mem_graphs");
 			const bool has_gpu = (Cpu::has_gpu and Config::getB("show_gpu"));
 
-			width = round((double)Term::width * (Proc::shown ? width_p : 100) / 100);
-			height = ceil((double)Term::height * (100 - Cpu::height_p * Cpu::shown - Net::height_p * Net::shown) / 100) + 1;
-			if (height + Cpu::height > Term::height) height = Term::height - Cpu::height;
-			x = (proc_left and Proc::shown) ? Term::width - width + 1: 1;
-			if (mem_below_net and Net::shown)
-				y = Term::height - height + 1 - (cpu_bottom ? Cpu::height : 0);
-			else
-				y = cpu_bottom ? 1 : Cpu::height + 1;
+			width = Term::width;
+			height = mem_height;
+			x = 1;
+			y = Cpu::height + 1;
 
 			if (show_disks) {
 				mem_width = ceil((double)(width - 3) / 2);
@@ -1753,13 +1771,10 @@ namespace Draw {
 		//* Calculate and draw net box outlines
 		if (Net::shown) {
 			using namespace Net;
-			width = round((double)Term::width * (Proc::shown ? width_p : 100) / 100);
-			height = Term::height - Cpu::height - Mem::height;
-			x = (proc_left and Proc::shown) ? Term::width - width + 1 : 1;
-			if (mem_below_net and Mem::shown)
-				y = cpu_bottom ? 1 : Cpu::height + 1;
-			else
-				y = Term::height - height + 1 - (cpu_bottom ? Cpu::height : 0);
+			width = Term::width;
+			height = net_height;
+			x = 1;
+			y = Cpu::height + Mem::height + proc_height + 1;
 
 			b_width = (width > 45) ? 27 : 19;
 			b_height = (height > 10) ? 9 : height - 2;
@@ -1775,10 +1790,10 @@ namespace Draw {
 		//* Calculate and draw proc box outlines
 		if (Proc::shown) {
 			using namespace Proc;
-			width = Term::width - (Mem::shown ? Mem::width : (Net::shown ? Net::width : 0));
-			height = Term::height - (cpu_wide ? Cpu::height : 0);
-			x = proc_left ? 1 : Term::width - width + 1;
-			y = (cpu_bottom and Cpu::shown or not cpu_wide) ? 1 : Cpu::height + 1;
+			width = Term::width;
+			height = proc_height;
+			x = 1;
+			y = Cpu::height + Mem::height + 1;
 			select_max = height - 3;
 			box = createBox(x, y, width, height, Theme::c("proc_box"), true, "proc", "", 4);
 		}

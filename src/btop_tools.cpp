@@ -76,15 +76,17 @@ namespace Term {
 		const bool mem = boxes.find("mem") != string::npos;
 		const bool net = boxes.find("net") != string::npos;
 		const bool proc = boxes.find("proc") != string::npos;
-		int width = 0;
-		if (mem) width = Mem::min_width;
-		else if (net) width = Mem::min_width;
-		width += (proc ? Proc::min_width : 0);
-		if (cpu and width < Cpu::min_width) width = Cpu::min_width;
-
-		int height = (cpu ? Cpu::min_height : 0);
-		if (proc) height += Proc::min_height;
-		else height += (mem ? Mem::min_height : 0) + (net ? Net::min_height : 0);
+		// The four boxes are stacked vertically and each one uses the full width.
+		const int width = max({
+			(cpu ? Cpu::min_width : 0),
+			(mem ? Mem::min_width : 0),
+			(proc ? Proc::min_width : 0),
+			(net ? Net::min_width : 0)
+		});
+		const int height = (cpu ? Cpu::min_height : 0)
+			+ (mem ? Mem::min_height : 0)
+			+ (proc ? Proc::min_height : 0)
+			+ (net ? Net::min_height : 0);
 
 		return { width, height };
 	}
