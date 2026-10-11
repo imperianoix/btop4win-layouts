@@ -19,6 +19,19 @@ mínimo de terminal). Para mostrar los cuatro paneles se necesitan al menos
 
 ![btop4win con CPU y GPU, memoria, procesos y red organizados en una columna vertical](Img/vertical-layout.png)
 
+### Optimizado para HYTE Nexus
+
+El layout vertical está optimizado para usarse en la pantalla de **HYTE Nexus**
+como alternativa de monitorización del sistema. Se recomienda configurar la
+terminal con una **fuente de tamaño 24** para conseguir una lectura cómoda en
+esa pantalla.
+
+Los paneles adaptan automáticamente su ancho y reparten su altura según el
+tamaño disponible de la terminal, por lo que el contenido se reajusta al
+redimensionar la ventana para encajarla en la pantalla de HYTE. Para mostrar
+CPU/GPU, Memoria, Procesos y Red al mismo tiempo, la terminal debe disponer de
+al menos **60 columnas × 40 filas**.
+
 ### GPU y sensores en Windows
 
 Compila la configuración `Release-LHM|x64` para activar GPU, temperaturas y
